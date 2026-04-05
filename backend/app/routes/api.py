@@ -14,7 +14,7 @@ async def process_text(data: dict):
     bullets = convert_to_bullets(summary)
 
     return {
-        "summary": summary,   # ✅ STRING (no list)
+        "summary": summary,   
         "bullets": bullets
     }
 @router.post("/generate-pdf")
