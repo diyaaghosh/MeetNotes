@@ -45,6 +45,4 @@ A web application that helps users capture, summarize, and organize meeting disc
 
 ---
 
-```bash
-git clone https://github.com/diyaaghosh/MeetNotes.git
-cd MeetNotes
+
