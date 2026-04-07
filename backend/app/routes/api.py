@@ -1,10 +1,10 @@
 from fastapi import APIRouter, UploadFile, File
 import shutil
 import os
-from app.services.hybrid_summarizer import summarize
-from app.services.extractor import convert_to_bullets
+from ..services.hybrid_summarizer import summarize
+from ..services.extractor import convert_to_bullets
 from fastapi.responses import FileResponse
-from app.services.pdf_service import generate_pdf
+from ..services.pdf_service import generate_pdf
 router = APIRouter()
 @router.post("/process-text")
 async def process_text(data: dict):
@@ -14,7 +14,7 @@ async def process_text(data: dict):
     bullets = convert_to_bullets(summary)
 
     return {
-        "summary": summary,   
+        "summary": summary,  
         "bullets": bullets
     }
 @router.post("/generate-pdf")
