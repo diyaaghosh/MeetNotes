@@ -8,7 +8,7 @@ nltk
 transformers
 networkx
 fpdf
-sentence-transformers
+sentence_transformers
 torch --index-url https://download.pytorch.org/whl/cpu
 reportlab
 python-multipart
