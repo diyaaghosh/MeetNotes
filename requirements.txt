@@ -8,6 +8,6 @@ nltk
 transformers
 networkx
 fpdf
-torch
+torch --index-url https://download.pytorch.org/whl/cpu
 reportlab
 python-multipart
