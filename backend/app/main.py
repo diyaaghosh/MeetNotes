@@ -13,3 +13,6 @@ app.add_middleware(
 )
 
 app.include_router(router)
+@app.get("/")
+def home():
+    return {"message": "Meeting Notes API running"}
