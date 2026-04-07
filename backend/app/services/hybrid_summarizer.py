@@ -1,11 +1,10 @@
 import nltk
 import numpy as np
-import networkx as nx
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import os
 
-
+# ---------- NLTK setup ----------
 nltk_data_path = "/opt/render/nltk_data"
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
@@ -13,19 +12,20 @@ nltk.data.path.append(nltk_data_path)
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
-    nltk.download("punkt", download_dir=nltk_data_path)
+    pass
 
 
-
+# ---------- Lazy model loading ----------
 model = None
 
 def get_model():
     global model
     if model is None:
-        model = SentenceTransformer("all-mpnet-base-v2")
+        model = SentenceTransformer("all-MiniLM-L6-v2")  # lightweight model
     return model
 
 
+# ---------- Text processing ----------
 def sentence_split(text):
     return nltk.sent_tokenize(text)
 
@@ -39,7 +39,9 @@ def remove_same_adjacent_words(sentences):
     cleaned = []
     for s in sentences:
         words = s.split()
-        cleaned.append(" ".join([w for i, w in enumerate(words) if i == 0 or w != words[i-1]]))
+        cleaned.append(
+            " ".join([w for i, w in enumerate(words) if i == 0 or w != words[i-1]])
+        )
     return cleaned
 
 
@@ -59,12 +61,13 @@ def is_valid(sentence):
     return True
 
 
+# ---------- Embeddings ----------
 def get_embeddings(sentences):
     model = get_model()
     return model.encode(sentences)
 
 
-
+# ---------- MMR summarization ----------
 def mmr_summary(sentences, embeddings, top_n, lambda_param=0.7):
 
     selected_idx = []
@@ -97,7 +100,7 @@ def mmr_summary(sentences, embeddings, top_n, lambda_param=0.7):
     return [sentences[i] for i in selected_idx]
 
 
-
+# ---------- Main function ----------
 def summarize(text, top_n=5):
 
     sentences = sentence_split(text)
