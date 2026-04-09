@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import os
 
-# ---------- NLTK setup ----------
+# ---------------- NLTK Setup ----------------
 nltk_data_path = "/opt/render/nltk_data"
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
@@ -12,29 +12,32 @@ nltk.data.path.append(nltk_data_path)
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
-    pass
+    nltk.download("punkt", download_dir=nltk_data_path)
 
 
-# ---------- Lazy model loading ----------
+# ---------------- Lazy Model Loading ----------------
 model = None
 
 def get_model():
     global model
     if model is None:
-        model = SentenceTransformer("all-MiniLM-L6-v2")  # lightweight model
+        print("Loading SentenceTransformer model...")
+        model = SentenceTransformer("all-MiniLM-L6-v2")
     return model
 
 
-# ---------- Text processing ----------
+# ---------------- Sentence Splitting ----------------
 def sentence_split(text):
     return nltk.sent_tokenize(text)
 
 
+# ---------------- Remove Fillers ----------------
 def remove_fillers(sentences):
     fillers = {"um", "uh", "like", "you know", "so", "actually", "basically"}
     return [s for s in sentences if not any(f in s.lower() for f in fillers)]
 
 
+# ---------------- Remove Repeated Adjacent Words ----------------
 def remove_same_adjacent_words(sentences):
     cleaned = []
     for s in sentences:
@@ -45,6 +48,7 @@ def remove_same_adjacent_words(sentences):
     return cleaned
 
 
+# ---------------- Sentence Filtering ----------------
 def is_valid(sentence):
     s = sentence.lower()
 
@@ -61,19 +65,20 @@ def is_valid(sentence):
     return True
 
 
-# ---------- Embeddings ----------
+# ---------------- Generate Embeddings ----------------
 def get_embeddings(sentences):
     model = get_model()
     return model.encode(sentences)
 
 
-# ---------- MMR summarization ----------
-def mmr_summary(sentences, embeddings, top_n, lambda_param=0.7):
+# ---------------- MMR Summarization ----------------
+def mmr_summary(sentences, embeddings, top_n=5, lambda_param=0.7):
 
     selected_idx = []
     centroid = np.mean(embeddings, axis=0)
 
     for _ in range(min(top_n, len(sentences))):
+
         mmr_scores = []
 
         for i in range(len(sentences)):
@@ -100,7 +105,7 @@ def mmr_summary(sentences, embeddings, top_n, lambda_param=0.7):
     return [sentences[i] for i in selected_idx]
 
 
-# ---------- Main function ----------
+# ---------------- Main Summarization Function ----------------
 def summarize(text, top_n=5):
 
     sentences = sentence_split(text)
