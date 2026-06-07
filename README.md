@@ -115,10 +115,13 @@ Maximal Marginal Relevance (MMR) selects the top N sentences by balancing two th
 **5. PDF generation**
 
 `pdf_service.py` uses `fpdf` to produce a two-section PDF: Summary (paragraph form) and Key Points (bullet list). The bullet marker is converted from `*` to `-` since fpdf does not handle the unicode dot character.
+
 ---
 ## Summarizer Model Architecture
 
 ![Summarizer Model](assets/summarizer_model.png)
+
+---
 ## Known Issues
 
 - The extension must be reloaded from `chrome://extensions` after any change to `script.js` or `manifest.json`.
