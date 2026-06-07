@@ -18,6 +18,8 @@ A Chrome extension that transcribes speech in real time during a meeting, then g
 │   │       ├── pdf_service.py         # PDF generation with fpdf
 │   │       └── summarizer.py          # TF-IDF summarizer (unused in main flow)
 │   ├── requirements.txt
+|   |
+|   ├──runtime.txt
 │   └── run.py
 └── extension/
     ├── index.html
@@ -114,13 +116,9 @@ Maximal Marginal Relevance (MMR) selects the top N sentences by balancing two th
 
 `pdf_service.py` uses `fpdf` to produce a two-section PDF: Summary (paragraph form) and Key Points (bullet list). The bullet marker is converted from `*` to `-` since fpdf does not handle the unicode dot character.
 ---
-<h2>Summarizer Model Architecture</h2>
+## Summarizer Model Architecture
 
-<p align="center">
-  <img src="assets/summarizer_model.png" alt="Summarizer Model" width="800">
-</p>
----
-
+![Summarizer Model](assets/summarizer_model.png)
 ## Known Issues
 
 - The extension must be reloaded from `chrome://extensions` after any change to `script.js` or `manifest.json`.
