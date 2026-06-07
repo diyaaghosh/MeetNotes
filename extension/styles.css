@@ -23,6 +23,7 @@
     font-family: 'Syne', sans-serif;
     background: var(--bg);
     color: var(--text);
+    min-width: 600px; 
     min-height: 100vh;
     overflow-x: hidden;
   }
