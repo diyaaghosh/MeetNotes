@@ -22,13 +22,8 @@ async def process_text(data: dict):
     try:
         text = data["text"]
 
-        print("Received text:", text[:100])
-
         summary = summarize(text)
-        print("Summary generated")
-
         bullets = convert_to_bullets(summary)
-        print("Bullets generated")
 
         return {
             "summary": summary,
@@ -37,8 +32,14 @@ async def process_text(data: dict):
 
     except Exception as e:
         import traceback
-        print(traceback.format_exc())
-        return {"error": str(e)}
+
+        error = traceback.format_exc()
+        print(error)
+
+        return {
+            "error": str(e),
+            "traceback": error
+        }
 @router.post("/generate-pdf")
 def create_pdf(data: dict):
     summary = data.get("summary", [])
