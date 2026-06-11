@@ -3,7 +3,10 @@
   "name": "Speech Notes",
   "version": "1.0",
   "permissions": ["storage"],
+  "host_permissions": [
+    "https://meetnotes-4.onrender.com/*"
+  ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "index.html"
   }
 }
