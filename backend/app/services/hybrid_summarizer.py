@@ -1,27 +1,23 @@
-import nltk
-import os
+import re
+import numpy as np
+import networkx as nx
 
-nltk_data_path = "/opt/render/nltk_data"
-os.makedirs(nltk_data_path, exist_ok=True)
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-nltk.data.path.append(nltk_data_path)
 
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt", download_dir=nltk_data_path)
+def sent_tokenize(text):
+    """
+    Lightweight sentence splitter.
+    """
+    return [
+        s.strip()
+        for s in re.split(r'(?<=[.!?])\s+', text)
+        if s.strip()
+    ]
 
-try:
-    nltk.data.find("tokenizers/punkt_tab")
-except LookupError:
-    nltk.download("punkt_tab", download_dir=nltk_data_path)
 
 def preprocess_sentences(sentences):
-    fillers = {
-        "um", "uh", "like", "you know",
-        "actually", "basically", "okay", "ok"
-    }
-
     cleaned = []
 
     for sentence in sentences:
@@ -30,18 +26,12 @@ def preprocess_sentences(sentences):
         if len(s.split()) < 5:
             continue
 
-        lower = s.lower()
-
-        if any(f in lower for f in fillers):
-            continue
-
         cleaned.append(s)
 
     return cleaned
 
 
 def rank_sentences(sentences):
-
     tfidf = TfidfVectorizer(
         stop_words="english",
         ngram_range=(1, 2)
@@ -61,7 +51,6 @@ def rank_sentences(sentences):
 
 
 def summarize(text, top_n=5):
-
     sentences = sent_tokenize(text)
 
     sentences = preprocess_sentences(sentences)
@@ -93,7 +82,6 @@ def summarize(text, top_n=5):
 
 
 def extract_key_points(summary):
-
     key_points = []
 
     action_words = {
@@ -109,15 +97,15 @@ def extract_key_points(summary):
         "complete",
         "finish",
         "schedule",
+        "scheduled",
         "assigned"
     }
 
     for sentence in summary:
-
         lower = sentence.lower()
 
         if any(word in lower for word in action_words):
-            key_points.append("ACTION: " + sentence)
+            key_points.append(f"ACTION: {sentence}")
         else:
             key_points.append(sentence)
 
