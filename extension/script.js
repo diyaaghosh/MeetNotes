@@ -1,3 +1,4 @@
+const API_BASE = "https://meetnotes-4.onrender.com";
 let recognition;
 let finalText = "";
 let isRecording = false;
@@ -112,7 +113,7 @@ async function endMeeting() {
     showScreen("notesScreen");
 
     try {
-        const res = await fetch("http://127.0.0.1:8000/process-text", {
+       const res = await fetch(`${API_BASE}/process-text`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: finalText }),
@@ -165,7 +166,7 @@ function copyNotes() {
 
 async function downloadPDF() {
     try {
-        const res = await fetch("http://127.0.0.1:8000/generate-pdf", {
+       const res = await fetch(`${API_BASE}/generate-pdf`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
