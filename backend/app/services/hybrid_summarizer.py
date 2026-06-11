@@ -6,19 +6,48 @@ import os
 nltk_data_path = "/opt/render/nltk_data"
 os.makedirs(nltk_data_path, exist_ok=True)
 nltk.data.path.append(nltk_data_path)
+# try:
+#     nltk.data.find("tokenizers/punkt")
+# except LookupError:
+#     nltk.download("punkt", download_dir=nltk_data_path)
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
     nltk.download("punkt", download_dir=nltk_data_path)
+
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    nltk.download("punkt_tab", download_dir=nltk_data_path)
+    
 model = None
+# def get_model():
+#     global model
+#     if model is None:
+#         print("Loading SentenceTransformer model...")
+#         model = SentenceTransformer("all-MiniLM-L6-v2")
+#     return model
 def get_model():
     global model
+
     if model is None:
-        print("Loading SentenceTransformer model...")
-        model = SentenceTransformer("all-MiniLM-L6-v2")
+        try:
+            print("Loading model...")
+            model = SentenceTransformer("all-MiniLM-L6-v2")
+            print("Model loaded.")
+        except Exception as e:
+            print("MODEL LOAD ERROR:", str(e))
+            raise
+
     return model
+# def sentence_split(text):
+#     return nltk.sent_tokenize(text)
 def sentence_split(text):
-    return nltk.sent_tokenize(text)
+    try:
+        return nltk.sent_tokenize(text)
+    except Exception as e:
+        print("Sentence split error:", e)
+        raise
 def remove_fillers(sentences):
     fillers = {"um", "uh", "like", "you know", "so", "actually", "basically"}
     return [s for s in sentences if not any(f in s.lower() for f in fillers)]
