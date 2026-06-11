@@ -1,16 +1,20 @@
 import nltk
-import numpy as np
-import networkx as nx
+import os
 
-from nltk.tokenize import sent_tokenize
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+nltk_data_path = "/opt/render/nltk_data"
+os.makedirs(nltk_data_path, exist_ok=True)
+
+nltk.data.path.append(nltk_data_path)
 
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
-    nltk.download("punkt")
+    nltk.download("punkt", download_dir=nltk_data_path)
 
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    nltk.download("punkt_tab", download_dir=nltk_data_path)
 
 def preprocess_sentences(sentences):
     fillers = {
