@@ -1,4 +1,4 @@
-const API_BASE = "https://meetnotes-4.onrender.com";
+const API_BASE = "https://meetnotes-2.onrender.com";
 let recognition;
 let finalText = "";
 let isRecording = false;
