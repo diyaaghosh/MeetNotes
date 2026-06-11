@@ -113,7 +113,7 @@ async function endMeeting() {
     showScreen("notesScreen");
 
     try {
-       const res = await fetch(`${API_BASE}/process-text`, {
+       const res = await fetch(`${API_BASE}/process_text`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: finalText }),
