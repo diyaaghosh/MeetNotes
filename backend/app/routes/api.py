@@ -17,7 +17,7 @@ router = APIRouter()
 #         "summary": summary,  
 #         "bullets": bullets
 #     }
-@app.post("/process_text")
+@router.post("/process_text")
 async def process_text(data: dict):
     try:
         text = data["text"]
