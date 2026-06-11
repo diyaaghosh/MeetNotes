@@ -17,36 +17,13 @@ router = APIRouter()
 #         "summary": summary,  
 #         "bullets": bullets
 #     }
-# @router.post("/process_text")
-# async def process_text(data: dict):
-#     try:
-#         text = data["text"]
-
-#         summary = summarize(text)
-#         bullets = convert_to_bullets(summary)
-
-#         return {
-#             "summary": summary,
-#             "bullets": bullets
-#         }
-
-#     except Exception as e:
-#         import traceback
-
-#         error = traceback.format_exc()
-#         print(error)
-
-#         return {
-#             "error": str(e),
-#             "traceback": error
-#         }
 @router.post("/process_text")
 async def process_text(data: dict):
     try:
-        text = data.get("text", "")
+        text = data["text"]
 
         summary = summarize(text)
-        bullets = summary  # or convert_to_bullets(summary)
+        bullets = convert_to_bullets(summary)
 
         return {
             "summary": summary,
@@ -54,7 +31,15 @@ async def process_text(data: dict):
         }
 
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+
+        error = traceback.format_exc()
+        print(error)
+
+        return {
+            "error": str(e),
+            "traceback": error
+        }
 @router.post("/generate-pdf")
 def create_pdf(data: dict):
     summary = data.get("summary", [])
