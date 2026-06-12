@@ -7,9 +7,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def sent_tokenize(text):
-    """
-    Lightweight sentence splitter.
-    """
     return [
         s.strip()
         for s in re.split(r'(?<=[.!?])\s+', text)
@@ -20,10 +17,25 @@ def sent_tokenize(text):
 def preprocess_sentences(sentences):
     cleaned = []
 
+    noise_phrases = {
+        "hello",
+        "hi",
+        "can you hear me",
+        "am i audible",
+        "are you audible",
+        "good morning",
+        "good evening"
+    }
+
     for sentence in sentences:
         s = sentence.strip()
 
         if len(s.split()) < 5:
+            continue
+
+        lower = s.lower()
+
+        if any(noise in lower for noise in noise_phrases):
             continue
 
         cleaned.append(s)
@@ -73,40 +85,20 @@ def summarize(text, top_n=5):
         [idx for idx, _ in ranked[:top_n]]
     )
 
-    summary = [
-        sentences[i]
-        for i in selected_indices
-    ]
+    summary = [sentences[i] for i in selected_indices]
 
     return summary
 
 
 def extract_key_points(summary):
-    key_points = []
-
-    action_words = {
-        "will",
-        "should",
-        "must",
-        "need",
-        "required",
-        "deadline",
-        "task",
-        "action",
-        "implement",
-        "complete",
-        "finish",
-        "schedule",
-        "scheduled",
-        "assigned"
-    }
+    bullets = []
 
     for sentence in summary:
-        lower = sentence.lower()
+        sentence = sentence.strip()
 
-        if any(word in lower for word in action_words):
-            key_points.append(f"ACTION: {sentence}")
-        else:
-            key_points.append(sentence)
+        if sentence.endswith("."):
+            sentence = sentence[:-1]
 
-    return key_points
+        bullets.append(sentence)
+
+    return bullets
