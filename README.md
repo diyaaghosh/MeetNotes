@@ -13,10 +13,10 @@ A Chrome extension that transcribes speech in real time during a meeting, then g
 │   │   ├── main.py              # FastAPI app, CORS config
 │   │   ├── routes/api.py        # POST /process-text, POST /generate-pdf
 │   │   └── services/
-│   │       ├── hybrid_summarizer.py   # BERT embeddings + MMR
-│   │       ├── extractor.py           # Converts summary sentences to bullets
+│   │       ├── hybrid_summarizer.py  
+│   │       ├── extractor.py        
 │   │       ├── pdf_service.py         # PDF generation with fpdf
-│   │       └── summarizer.py          # TF-IDF summarizer (unused in main flow)
+│   │       └── summarizer.py        
 │   ├── requirements.txt
 |   |
 |   ├──runtime.txt
@@ -92,38 +92,3 @@ Returns `notes.pdf` as a file response.
 
 ---
 
-## How the Summarization Works
-
-The main pipeline is in `hybrid_summarizer.py`.
-
-**1. Sentence splitting and cleaning**
-
-The transcript is tokenized into sentences with NLTK. Filler words (`um`, `uh`, `like`, etc.) and noise phrases (`can you hear`, `hello`, etc.) are filtered out. Sentences under 4 words or containing questions are also dropped.
-
-**2. Sentence embeddings**
-
-The cleaned sentences are encoded with `sentence-transformers/all-MiniLM-L6-v2`, a lightweight BERT-based model that maps each sentence to a 384-dimensional vector.
-
-**3. MMR selection**
-
-Maximal Marginal Relevance (MMR) selects the top N sentences by balancing two things: relevance to the centroid of all sentence embeddings, and diversity from already-selected sentences. The tradeoff is controlled by `lambda_param` (default 0.7, skewing toward relevance). This avoids picking multiple sentences that say the same thing.
-
-**4. Bullet extraction**
-
-`extractor.py` takes the selected summary sentences and prepends a bullet marker to each. No additional NLP happens here.
-
-**5. PDF generation**
-
-`pdf_service.py` uses `fpdf` to produce a two-section PDF: Summary (paragraph form) and Key Points (bullet list). The bullet marker is converted from `*` to `-` since fpdf does not handle the unicode dot character.
-
----
-## Summarizer Model Architecture
-
-![Summarizer Model](assets/summarizer_model.png)
-
----
-## Known Issues
-
-- The extension must be reloaded from `chrome://extensions` after any change to `script.js` or `manifest.json`.
-- `summarizer.py` (TF-IDF approach) is present but not connected to any route. It was the earlier implementation.
-- The PDF is written to `backend/output.pdf` on disk before being served. Concurrent requests would overwrite it.
